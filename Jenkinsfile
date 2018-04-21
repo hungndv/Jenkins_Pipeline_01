@@ -33,7 +33,8 @@ pipeline {
                 stage('Parallel Test 3') {
                     steps {
                         powershell 'Write-Output "Parallel 3 Start $((Get-Date).ToString("yyyyMMdd HHmmss"))"'
-                        powershell 'sleep 10'
+                        powershell 'sleep 5'
+                        //error 'Throw error...'
                         powershell 'Write-Output "Parallel 3 End   $((Get-Date).ToString("yyyyMMdd HHmmss"))"'
                     }
                 }
