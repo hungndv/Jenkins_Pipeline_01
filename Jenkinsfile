@@ -1,9 +1,10 @@
 pipeline {
     agent any 
     stages {
-        stage('Stage 1') {
+        stage('Build') {
             steps {
-                echo 'Hello world!' 
+                bat '"C:\nuget.exe" restore Jenkins_Pipeline_01.sln'
+                bat '"C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe" SolutionName.sln'
             }
         }
     }
