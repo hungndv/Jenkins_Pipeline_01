@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ClassLibrary1;
+using Newtonsoft;
+using Newtonsoft.Json;
 
-namespace Jenkins_Pipeline_01
+namespace ClassLibrary1
 {
-    class Program
+    public class Class1
     {
-        static void Main(string[] args)
-        {
-        }
     }
 }
