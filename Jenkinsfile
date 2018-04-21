@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     stages {
-/* // uncomment to test on local
+/*// uncomment stage('Checkout') to test on local
         stage('Checkout') {
             steps {
                 git credentialsId: 'cb2054a9-9a1e-4074-92b5-ed043797387b', url: 'https://github.com/hungndv/Jenkins_Pipeline_01.git'
@@ -45,6 +45,11 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post { 
+        always { 
+            emailext attachLog: true, body: '$DEFAULT_CONTENT', subject: '$DEFAULT_SUBJECT', to: 'hungndv1989@gmail.com'
         }
     }
 }
