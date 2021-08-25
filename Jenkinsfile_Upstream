@@ -1,0 +1,47 @@
+def parallelStagesMap() {
+    def map = [:]
+    for (i = 1; i <= params.DOWNSTREAM_BUILD_NUM.toInteger(); i++) {
+        def iString = i.toString()
+        def fn = "case_ids_${iString}.txt"
+        writeFile file: "${fn}", text: "-t ${iString}"
+        archiveArtifacts artifacts: "${fn}", followSymlinks: false
+        map[iString] =
+            {
+                stage("Parallel ${iString}") {
+                    build job: 'Pipeline_Downsteam_Test', parameters: [string(name: 'TESTRAIL_RUN_ID', value: "${params.TESTRAIL_RUN_ID}"), string(name: 'ARG_FILE', value: "${fn}"), string(name: 'UPSTREAM_JOB', value: "${JOB_NAME}"), string(name: 'BUILD_NUMBER', value: "${BUILD_NUMBER}")]
+                }
+            }
+    }
+    return map
+}
+
+pipeline {
+    agent { label 'slave_01' }
+    
+    options {
+        // This is required if you want to clean before build
+        skipDefaultCheckout(true)
+    }
+    
+    parameters {
+        string defaultValue: 'HUNG', description: '', name: 'TESTRAIL_RUN_ID'
+        string defaultValue: '2', description: '', name: 'DOWNSTREAM_BUILD_NUM'
+    }
+    
+    stages {
+        stage('CleanWorkspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        
+        stage('Parallel') {
+            steps {
+                script {
+                    parallel parallelStagesMap()
+                }
+            }
+        }
+    }
+
+}

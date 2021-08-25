@@ -1,0 +1,38 @@
+pipeline {
+    //agent { label '!master' }
+    agent { label 'master' }
+    
+    options {
+        // This is required if you want to clean before build
+        skipDefaultCheckout(true)
+    }
+    
+    parameters {
+        string defaultValue: '', description: '', name: 'TESTRAIL_RUN_ID'
+        string defaultValue: '', description: '', name: 'ARG_FILE'
+        string defaultValue: '', description: '', name: 'UPSTREAM_JOB'
+        string defaultValue: '', description: '', name: 'BUILD_NUMBER'
+    }
+
+    stages {
+        stage('CleanWorkspace') {
+            steps {
+                cleanWs()
+            }
+        }
+        
+        stage('Hello') {
+            steps {
+                script {
+                    sleep time: 10000, unit: 'MILLISECONDS'
+                    echo "TESTRAIL_RUN_ID ${params.TESTRAIL_RUN_ID}"
+                    echo "ARG_FILE ${params.ARG_FILE}"
+                    copyArtifacts(projectName: "${params.UPSTREAM_JOB}", selector: specific("${params.BUILD_NUMBER}"), filter: "${params.ARG_FILE}");
+                    def fc = readFile "${params.ARG_FILE}"
+                    echo "File content ====>> "
+                    echo "${fc}"
+                }
+            }
+        }
+    }
+}
